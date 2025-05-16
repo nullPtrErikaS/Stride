@@ -3,6 +3,11 @@ from sqlalchemy.orm import Session
 from app import models, database, schemas
 from app.routers.auth import get_current_user
 
+import redis.asyncio as redis
+import asyncio
+
+r = redis.Redis()
+
 router = APIRouter(
     prefix="/tasks",
     tags=["Tasks"]
@@ -17,11 +22,21 @@ def protected_route(current_user: models.User = Depends(get_current_user)):
     return {"message": f"Hello {current_user.username}, you are authorized!"}
 
 @router.post("/", response_model=schemas.TaskResponse)
-def create_task(task: schemas.TaskCreate, db: Session = Depends(database.get_db), current_user: models.User = Depends(get_current_user)):
+async def create_task(
+    task: schemas.TaskCreate,
+    db: Session = Depends(database.get_db),
+    current_user: models.User = Depends(get_current_user),
+):
     new_task = models.Task(content=task.content, owner_id=current_user.id)
     db.add(new_task)
-    db.commit()
-    db.refresh(new_task)
+
+    # Commit in thread-safe way for async route
+    await asyncio.to_thread(db.commit)
+    await asyncio.to_thread(db.refresh, new_task)
+
+    # Broadcast new task
+    await r.publish("task_feed", f"{current_user.username}: {task.content}")
+
     return new_task
 
 @router.get("/", response_model=list[schemas.TaskResponse])

@@ -1,18 +1,13 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
+# .gitignore
 venv/
-backend/venv/
-backend/app/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 # Node
 node_modules/
-frontend/node_modules/
-.next/
-dist/
-.env
 
-# System
+# Mac & editor files
 .DS_Store
+.env

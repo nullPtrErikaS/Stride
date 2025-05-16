@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import APIKeyHeader
 
 router = APIRouter(
     prefix="/auth",
@@ -14,7 +14,10 @@ router = APIRouter(
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "your-secret-key"  # Replace with secure random string later
+SECRET_KEY = "s3cr3t$super!long^key"
+
+print("SECRET_KEY IN USE:", SECRET_KEY)
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -25,6 +28,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
+    print("ENCODING WITH SECRET:", SECRET_KEY)
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 @router.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
@@ -66,12 +70,12 @@ def login(
 
     from fastapi.responses import JSONResponse  # import here if not at top already
 
-    return JSONResponse(content={    # <<< 🚨 Fix: Force JSONResponse!
+    return JSONResponse(content={    # <<< Fix: Force JSONResponse!
         "access_token": access_token,
         "token_type": "bearer"
     })
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = APIKeyHeader(name="Authorization")
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
     credentials_exception = HTTPException(
@@ -79,18 +83,28 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         detail="Could not validate credentials.",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    print("DECODING WITH SECRET:", SECRET_KEY)
+    print("Raw incoming token:", token)
+
+    if token.startswith("Bearer "):
+        token = token[len("Bearer "):]
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
+        print("TOKEN PAYLOAD EMAIL:", email)
         if email is None:
             raise credentials_exception
-    except JWTError:
+    except JWTError as e:
+        print("JWT ERROR:", e)
         raise credentials_exception
 
     user = db.query(models.User).filter(models.User.email == email).first()
+    print("DB USER FOUND:", user)
     if user is None:
         raise credentials_exception
-    return user
+    
+    return user 
 
 @router.delete("/delete_user")
 def delete_user(email: str, db: Session = Depends(database.get_db)):
