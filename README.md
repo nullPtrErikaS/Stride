@@ -1,4 +1,4 @@
-# 🚀 HustleHub
+# 🚀 Stride
 
 HustleHub is a productivity-focused social media platform that empowers users to share and complete small tasks, fostering a supportive and motivating community. Whether it's studying, cleaning, or running errands, HustleHub turns your to-do list into a social experience.
 
