@@ -1,6 +1,6 @@
 # 🚀 Stride
 
-HustleHub is a productivity-focused social media platform that empowers users to share and complete small tasks, fostering a supportive and motivating community. Whether it's studying, cleaning, or running errands, HustleHub turns your to-do list into a social experience.
+Stride is a productivity-focused social media platform that empowers users to share and complete small tasks, fostering a supportive and motivating community. Whether it's studying, cleaning, or running errands, Stride turns your to-do list into a social experience.
 
 ## 🌟 Features
 
@@ -29,7 +29,7 @@ HustleHub is a productivity-focused social media platform that empowers users to
 ## 🚧 Setup Instructions
 
 ```bash
-git clone https://github.com/nullPtrErikaS/Hustle-Hub-V2.git
-cd Hustle-Hub-V2/frontend
+git clone https://github.com/nullPtrErikaS/Stride.git
+cd Stride/frontend
 npm install
 npm run dev
