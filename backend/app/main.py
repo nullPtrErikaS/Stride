@@ -8,7 +8,7 @@ from app import models
 
 app = FastAPI()
 
-# CORS middleware 👇
+# CORS middleware 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # allow your frontend dev server

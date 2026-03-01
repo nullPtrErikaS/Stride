@@ -1,16 +1,16 @@
-# 🚀 Stride
+#  Stride
 
 Stride is a productivity-focused social media platform that empowers users to share and complete small tasks, fostering a supportive and motivating community. Whether it's studying, cleaning, or running errands, Stride turns your to-do list into a social experience.
 
-## 🌟 Features
+##  Features
 
-- ✅ **Task Posting**: Share your current hustle with a short description.
-- 🧠 **Motivation Feed**: See what others are doing and get inspired.
-- 🔔 **Notifications**: Stay updated when someone interacts with your tasks.
-- 🔒 **Authentication**: Secure user sign-up and login.
-- 📱 **Mobile-First Design**: Clean, responsive UI for all devices.
+-  **Task Posting**: Share your current hustle with a short description.
+-  **Motivation Feed**: See what others are doing and get inspired.
+-  **Notifications**: Stay updated when someone interacts with your tasks.
+-  **Authentication**: Secure user sign-up and login.
+-  **Mobile-First Design**: Clean, responsive UI for all devices.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 **Frontend**
 - React + TypeScript
@@ -26,7 +26,7 @@ Stride is a productivity-focused social media platform that empowers users to sh
 - Git & GitHub
 - Vercel (or Netlify) for deployment
 
-## 🚧 Setup Instructions
+##  Setup Instructions
 
 ```bash
 git clone https://github.com/nullPtrErikaS/Stride.git

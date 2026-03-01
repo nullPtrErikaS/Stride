@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Form
 from sqlalchemy.orm import Session
 from app import models, database, schemas
-from passlib.context import CryptContext
+import bcrypt
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
@@ -12,14 +12,12 @@ router = APIRouter(
     tags=["Auth"]
 )
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 SECRET_KEY = "your-secret-key"  # Replace with secure random string later
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
@@ -37,7 +35,7 @@ def register(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     if db_user_by_email:
         raise HTTPException(status_code=400, detail="Email already registered.")
 
-    hashed_password = pwd_context.hash(user.password)
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     new_user = models.User(username=user.username, email=user.email, password=hashed_password)
 
     db.add(new_user)
@@ -66,7 +64,7 @@ def login(
 
     from fastapi.responses import JSONResponse  # import here if not at top already
 
-    return JSONResponse(content={    # <<< 🚨 Fix: Force JSONResponse!
+    return JSONResponse(content={    # <<<  Fix: Force JSONResponse!
         "access_token": access_token,
         "token_type": "bearer"
     })
